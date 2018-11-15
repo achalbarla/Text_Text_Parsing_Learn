@@ -1,0 +1,53 @@
+#Parse Alarm after 18A MSC Upgrade#
+#Python Script#
+
+import datetime
+import sys
+with open('work.log', 'r') as infile:
+    for line in infile:
+        if 'V010502010' in line:
+            a=line
+            b=(a[29:35])
+            today = datetime.date.today().strftime('%Y%m%d')
+            k = today
+            lo = k[2:8]
+            if b == lo:
+                sys.stdout.write("\033[1;31m")
+                print ('The new alarms are :-').strip()
+                print (line).strip()
+                print next(infile).strip()
+                print next(infile).strip()
+                print next(infile).strip()
+                print next(infile).strip()
+                print next(infile).strip()
+                print next(infile).strip()
+
+            #else:
+                #print('No New alarm')
+
+#Winfiol Script#
+
+script -a  work.log
+@ASK {node} "enter name of the node"
+eaw {node}
+allip;
+aploc;
+mml -cp CP1
+allip;
+aploc;
+mml -cp CP2
+allip;
+exit;
+exit
+
+@GETDATE {date} YYYYMMDD
+@GETTIME {time} HHMM
+
+@LOG ON C:\Users\eachbar\Documents\OFFICIAL_csi\Project Telstra 4 MSC 18A Upgrade\Activity Logs\post_alarm\_{date}_{time}_{node}_post_18A_MSC_UG.txt
+
+
+
+python /home/d776460/18A_MSC/Alarm_parse.py
+@CLOSE 
+rm work.log 
+
